@@ -1,0 +1,27 @@
+[package]
+name = "tetris"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies.crossterm]
+version = "0.23.0"
+features = ["event-stream"]
+
+
+[dependencies.futures]
+version = "0.3"
+
+[dependencies.futures-timer]
+version = "3.0"
+
+
+[dependencies.async-std]
+version = "1.10"
+
+[dependencies]
+itertools = "0.10.2"
+tailcall = "0.1.5"
+rand = "0.8.0"
+fn_block = "0.2.1"
