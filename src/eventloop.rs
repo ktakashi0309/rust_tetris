@@ -142,20 +142,17 @@ where
     V: View,
     I: Input,
 {
-    loop {
-        match input.read_dead()? {
-            DeadInput::Restart => {
-                appmodel.mode = Mode::Play;
-                appmodel.datas.clear();
-                view.update(appmodel)?;
-                return Ok(());
-            }
-            DeadInput::End => {
-                appmodel.mode = Mode::End;
-                return Ok(());
-            }
+    match input.read_dead()? {
+        DeadInput::Restart => {
+            appmodel.mode = Mode::Play;
+            appmodel.datas.clear();
+            view.update(appmodel)?;
+        }
+        DeadInput::End => {
+            appmodel.mode = Mode::End;
         }
     }
+    Ok(())
 }
 
 #[cfg(test)]
