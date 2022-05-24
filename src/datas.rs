@@ -19,7 +19,7 @@ impl Datas {
         Self {
             fixed: Vec::new(),
             float: Vec::new(),
-            field: field,
+            field,
         }
     }
     pub fn clear(&mut self) -> &mut Self {
@@ -49,10 +49,8 @@ impl Datas {
     pub fn do_routing(&mut self) -> &mut Self {
         if self.can_routing() {
             self.float = get_routing(&self.float).unwrap();
-            self
-        } else {
-            self
-        }
+        };
+        self
     }
     fn can_routing(&self) -> bool {
         let routed = get_routing(&self.float);
@@ -70,23 +68,17 @@ impl Datas {
         {
             return false;
         }
-        return true;
+        true
     }
     fn can_down(&self) -> bool {
-        if self.float.len() == 0 {
+        if self.float.is_empty() {
             return false;
         };
         self.float
             .iter()
             .filter(|(i, j)| {
-                self.fixed
-                    .iter()
-                    .fold(false, |acc, k| acc || (*i + 1, *j) == *k)
-                    || self
-                        .field
-                        .frame
-                        .iter()
-                        .fold(false, |acc, k| acc || (*i + 1, *j) == *k)
+                self.fixed.iter().any(|k| (*i + 1, *j) == *k)
+                    || self.field.frame.iter().any(|k| (*i + 1, *j) == *k)
             })
             .count()
             == 0
@@ -95,14 +87,8 @@ impl Datas {
         self.float
             .iter()
             .filter(|(i, j)| {
-                self.fixed
-                    .iter()
-                    .fold(false, |acc, k| acc || (*i, *j - 1) == *k)
-                    || self
-                        .field
-                        .frame
-                        .iter()
-                        .fold(false, |acc, k| acc || (*i, *j - 1) == *k)
+                self.fixed.iter().any(|k| (*i, *j - 1) == *k)
+                    || self.field.frame.iter().any(|k| (*i, *j - 1) == *k)
             })
             .count()
             == 0
@@ -111,25 +97,19 @@ impl Datas {
         self.float
             .iter()
             .filter(|(i, j)| {
-                self.fixed
-                    .iter()
-                    .fold(false, |acc, k| acc || (*i, *j + 1) == *k)
-                    || self
-                        .field
-                        .frame
-                        .iter()
-                        .fold(false, |acc, k| acc || (*i, *j + 1) == *k)
+                self.fixed.iter().any(|k| (*i, *j + 1) == *k)
+                    || self.field.frame.iter().any(|k| (*i, *j + 1) == *k)
             })
             .count()
             == 0
     }
-    fn to_fixed(&mut self) -> &mut Self {
+    fn float_to_fixed(&mut self) -> &mut Self {
         self.fixed.append(&mut self.float);
         self
     }
     pub fn down_action(&mut self) -> &mut Self {
         if !self.can_down() {
-            self.to_fixed();
+            self.float_to_fixed();
             self.calc_line();
             return self;
         }
@@ -154,7 +134,7 @@ impl Datas {
         let count = self
             .float
             .iter()
-            .filter(|&x| self.fixed.iter().fold(true, |acc, y| acc && x != y))
+            .filter(|&x| self.fixed.iter().all(|y| x != y))
             .count();
         count == 0
     }
@@ -163,7 +143,7 @@ impl Datas {
         self
     }
     pub fn exist_float(&self) -> bool {
-        self.float.len() != 0
+        !self.float.is_empty()
     }
     pub fn get_deletable_lines(&self) -> Vec<usize> {
         (0..self.field.depth)
@@ -174,7 +154,7 @@ impl Datas {
             .collect_vec()
     }
 
-    fn calc_down_lines(delete_lines: &Vec<usize>, point: &Point) -> Option<usize> {
+    fn calc_down_lines(delete_lines: &[usize], point: &Point) -> Option<usize> {
         if delete_lines.iter().filter(|&x| x == &point.0).count() > 0 {
             return None;
         };
@@ -284,7 +264,7 @@ mod tests {
     fn to_fixed() {
         let mut datas = Datas::new(Field::new(10, 10));
         datas.float.push((1, 2));
-        datas.to_fixed();
+        datas.float_to_fixed();
         assert_eq!(datas.fixed, vec![(1, 2)]);
         assert_eq!(datas.float, vec![]);
     }

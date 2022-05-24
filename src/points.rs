@@ -49,7 +49,7 @@ mod tests {
         points.push((3, 5));
         points.push((2, 4));
         let mut points2 = routing_shaft(&points, (3, 4)).unwrap();
-        points2.sort();
+        points2.sort_unstable();
         assert_eq!(points2[0], (2, 4));
     }
     #[test]
@@ -77,7 +77,7 @@ mod tests {
         points.push((3, 4));
         points.push((3, 5));
         let mut routed = get_routing(&points).unwrap();
-        routed.sort();
+        routed.sort_unstable();
         assert_eq!(routed[0], (2, 4));
     }
 }

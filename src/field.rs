@@ -16,9 +16,9 @@ impl Field {
             frame.push((depth, i));
         }
         Self {
-            depth: depth,
-            width: width,
-            frame: frame,
+            depth,
+            width,
+            frame,
         }
     }
 }
